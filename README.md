@@ -2,7 +2,7 @@
 
 TCP's core reliability guarantees, implemented from scratch on top of raw
 UDP, in Python. UDP gives you fast, unreliable, unordered, connectionless
-delivery — this project builds everything TCP adds on top of that: reliable
+delivery -this project builds everything TCP adds on top of that: reliable
 delivery, ordering, pipelining, congestion control, and a real connection
 lifecycle.
 
@@ -11,7 +11,7 @@ Built in five phases, each independently runnable and tested.
 ![congestion window sawtooth](transport_cwnd_sawtooth.png)
 
 *Slow start ramps the congestion window up fast, then AIMD takes over:
-climb, hit a loss, halve, climb again — TCP's classic sawtooth, reproduced
+climb, hit a loss, halve, climb again - TCP's classic sawtooth, reproduced
 here from a real, lossy UDP transfer.*
 
 ## What it does
@@ -20,14 +20,14 @@ here from a real, lossy UDP transfer.*
   that deliberately drops, duplicates, and reorders packets, so reliability
   can actually be tested (real UDP on localhost essentially never fails on
   its own).
-- **Stop-and-wait reliable delivery** — the core proof: every byte arrives
+- **Stop-and-wait reliable delivery** - the core proof: every byte arrives
   exactly once, in order, even under 30%+ simulated loss.
-- **Sliding window / pipelining** — many packets in flight at once, cumulative
-  ACKs, out-of-order reassembly — roughly a 7x throughput improvement over
+- **Sliding window / pipelining** -many packets in flight at once, cumulative
+  ACKs, out-of-order reassembly - roughly a 7x throughput improvement over
   stop-and-wait under identical loss.
-- **Congestion control** — slow start (exponential ramp-up) plus AIMD
+- **Congestion control** - slow start (exponential ramp-up) plus AIMD
   (halve on loss, grow linearly after), producing TCP's classic sawtooth.
-- **A real connection lifecycle** — a 3-way handshake (SYN/SYN-ACK/ACK)
+- **A real connection lifecycle** - a 3-way handshake (SYN/SYN-ACK/ACK)
   before data flows and a FIN/FIN-ACK teardown after, both reliable under
   loss like everything else here.
 
@@ -42,7 +42,7 @@ Phase 5: Connection (handshake + data + teardown) + the full 3-way benchmark
 ```
 
 Each later phase reuses the earlier phases' already-hardened pieces rather
-than re-deriving similar logic — Phase 4's sender reuses Phase 3's receiver
+than re-deriving similar logic - Phase 4's sender reuses Phase 3's receiver
 unchanged, for instance.
 
 ## Phases
@@ -93,7 +93,7 @@ known limitation of loss-based congestion control, reproduced here with data.
 ## Tests
 
 Every phase ships tests, and each one is stress-tested well past "it passed
-once" — several phases surfaced genuine intermittent, timing-dependent bugs
+once" - several phases surfaced genuine intermittent, timing-dependent bugs
 that only repeated runs under real (unseeded) randomness could catch.
 
 ```bash
@@ -110,7 +110,7 @@ python test_phase5.py   # handshake/teardown, full connection lifecycle, 10 repe
 - `matplotlib` for the sawtooth and comparison charts
 - `pytest`-style assertions (plain `assert`, no framework dependency)
 
-## Design notes (interview-relevant)
+## notes 
 
 - **A lossy-channel simulator is the foundation everything else depends on**,
   and its own failure injection is verified from the *receiver's* side — a
@@ -124,6 +124,4 @@ python test_phase5.py   # handshake/teardown, full connection lifecycle, 10 repe
   can't tell random packet loss from actual network congestion, and backs
   off in both cases — visible directly in this project's own benchmark data.
 
-## License
 
-MIT (or your choice).
